@@ -1,9 +1,9 @@
+<title>Login</title>
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                <h1>Halaman Login Admin</h1>
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('img/tcm2.png') }}" alt="Logo Rumah Sehat Herbal Inti Sehat TCM" width="450">
             </a>
         </x-slot>
 
@@ -13,12 +13,12 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ url('login-post') }}">
             @csrf
 
             <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Email Staff Klinik')" />
+                <x-label for="email" :value="__('Email')" />
 
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
             </div>
@@ -42,11 +42,16 @@
             </div> --}}
 
             <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
+                {{-- @if (Route::has('password.request'))
                     <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
                         {{ __('Lupa Password?') }}
                     </a>
-                @endif
+                @endif --}}
+
+                <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('register') }}">
+                    {{ __('Belum Punya Akun?') }}
+                </a>
 
                 <x-button class="ml-3">
                     {{ __('Masuk') }}

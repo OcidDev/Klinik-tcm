@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use PDO;
+use DateTime;
+use Carbon\Carbon;
+use App\Models\Obat;
+use App\Models\Rekam;
 use App\Models\Dokter;
 use App\Models\Pasien;
-use App\Models\Rekam;
-use App\Models\Obat;
+use App\Models\Antrian;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use PDO;
 
 class PasienController extends Controller
 {
@@ -42,33 +44,49 @@ class PasienController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'Nama' => 'required',
-            'Alamat' => 'required',
-            'Lahir' => 'required',
-            'NIK' => 'required',
-            'Kelamin' => 'required',
-            'Telepon' => 'required',
-            'Agama' => 'required',
-            'Pendidikan' => 'required',
-            'Pekerjaan' => 'required',
-            'layanan' => 'required',
-            'RekamMedis' => 'required',
-            'doktor' => 'required',
-            'g-recaptcha-response' => 'required|captcha'
-        ],
-        [
-            'g-recaptcha-response' => [
-                'required' => 'Please verify that you are not a robot.',
-                'captcha' => 'Captcha error! try again later or contact site admin.',
+
+        $this->validate(
+            $request,
+            [
+                'Nama' => 'required',
+                'Alamat' => 'required',
+                'Lahir' => 'required',
+                'Kelamin' => 'required',
+                'Telepon' => 'required',
+                'Agama' => 'required',
+                'layanan' => 'required',
+                'RekamMedis' => 'required',
+                'doktor' => 'required',
+                'warna_brosur' => 'required',
+                'g-recaptcha-response' => 'required|captcha'
             ],
-        ],
+            [
+                'g-recaptcha-response' => [
+                    'required' => 'Please verify that you are not a robot.',
+                    'captcha' => 'Captcha error! try again later or contact site admin.',
+                ],
+            ],
         );
+        // dd($request->all());
 
+        $timeSelected = $request->tanggal . ' ' . $request->time_slot . ':00';
         $data = Pasien::where('nama', $request->Nama)->where('lahir', $request->Lahir)->get();
+        $total_rekam = Rekam::whereDate('created_at', $request->tanggal)->get();
+        if (count($total_rekam) >= 10) {
+            session()->flash('failed', 'Kouta Pemeriksaan Yang anda pilih Penuh.');
+            return redirect()->back();
+        }
 
+
+        // cek duplikat jam
+        $dataCek = Rekam::where('created_at', $timeSelected)->first();
+        // dd($dataCek);
+        if (!empty($dataCek)) {
+            session()->flash('failed', 'Jam Pemeriksaan Yang anda pilih sudah penuh.');
+            return redirect()->back();
+        }
         $nomorAntrian = 1;
-        $cekData = Rekam::whereDate('created_at', Carbon::today())->latest()->first();
+        $cekData = Rekam::whereDate('created_at', $request->tanggal)->latest()->first();
         // $cekData = Rekam::whereDate('created_at', Carbon::today())->max('nomorantrian');
         if ($cekData) {
             $nomorAntrian = $cekData->nomorantrian + 1;
@@ -81,21 +99,27 @@ class PasienController extends Controller
                     'id_pasien' => $row->id,
                     'layanan' => $request->layanan,
                     'keluhan' => $request->RekamMedis,
+                    'created_at' => $timeSelected,
                     'id_dokter' => $request->doktor
                 ]);
 
-                if($Rekam->nomorantrian == '001'){
+                if ($Rekam->nomorantrian == '001') {
                     $created = $Rekam->created_at;
                     $Rekam->jadwal_kedatangan = $created->addMinute(5);
                     $Rekam->jadwal_selesai = $created->addMinute(15);
+                    $Rekam->created_at = $timeSelected;
+                    $Rekam->updated_at = $timeSelected;
                     $Rekam->save();
-                }else{
+                } else {
                     $created = Carbon::parse($cekData->created_at);
                     $Rekam->jadwal_kedatangan = $created->addMinute(25);
                     $Rekam->jadwal_selesai = $created->addMinute(35);
+                    $Rekam->created_at = $timeSelected;
+                    $Rekam->updated_at = $timeSelected;
                     $Rekam->save();
                 }
-                
+                session()->put('nomorAntrian', "00" . $nomorAntrian);
+
                 return back()->with([
                     'success' => 'Data berhasil ditambahkan',
                     'nomorAntrian' => "00" . $nomorAntrian,
@@ -111,19 +135,18 @@ class PasienController extends Controller
                 'nama' => ucwords(strtolower($request->Nama)),
                 'alamat' => $request->Alamat,
                 'lahir' => $request->Lahir,
-                'nik' => $request->NIK,
                 'kelamin' => $request->Kelamin,
                 'telepon' => $request->Telepon,
                 'agama' => $request->Agama,
-                'pendidikan' => $request->Pendidikan,
-                'pekerjaan' => $request->Pekerjaan
+                'warna_brosur' => $request->warna_brosur
             ]);
 
             // $kode= 100000+ (integer)$Pasien -> id ;
             // $nomer= substr($kode, 1, 5). $Pasien -> lahir -> format ('dmy');
             // $Pasien -> kodepasien = $nomer ;
             // $Pasien -> save();
-            $nomer = $Pasien->lahir->format('dmy');
+            $lahir = new DateTime($Pasien->lahir);
+            $nomer = $lahir->format('dmy');
             $Pasien->kodepasien = $nomer;
             $Pasien->save();
 
@@ -134,20 +157,26 @@ class PasienController extends Controller
                 'id_pasien' => $latestpasien->id,
                 'layanan' => $request->layanan,
                 'keluhan' => $request->RekamMedis,
-                'id_dokter' => $request->doktor
+                'id_dokter' => $request->doktor,
+                'created_at' => $timeSelected,
             ]);
 
-            if($rekam->nomorantrian == '001'){
+            if ($rekam->nomorantrian == '001') {
                 $created = $rekam->created_at;
                 $rekam->jadwal_kedatangan = $created->addMinute(5);
                 $rekam->jadwal_selesai = $created->addMinute(15);
+                $rekam->created_at = $timeSelected;
+                $rekam->updated_at = $timeSelected;
                 $rekam->save();
-            }else{
+            } else {
                 $created = Carbon::parse($latestpasien->created_at);
                 $rekam->jadwal_kedatangan = $created->addMinute(25);
                 $rekam->jadwal_selesai = $created->addMinute(35);
+                $rekam->created_at = $timeSelected;
+                $rekam->updated_at = $timeSelected;
                 $rekam->save();
             }
+            session()->put('nomorAntrian', "00" . $nomorAntrian);
 
             return back()->with([
                 'success' => 'Data berhasil ditambahkan',
@@ -185,6 +214,8 @@ class PasienController extends Controller
     {
         $pasien = Pasien::findOrfail($id);
         $rekam = Rekam::where('id_pasien', $id)->whereNotNull('diagnosa')->get();
+        $pasien = Pasien::find($id);
+        return view('pasien-edit', compact('pasien'));
 
         return view('pasien-rekammedis', [
             'pasien' => $pasien,
@@ -209,37 +240,37 @@ class PasienController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request);
+        // Validasi input
         $request->validate([
-            'Kodepasien' => 'required',
-            'Nama' => 'required',
-            'Alamat' => 'required',
-            'Lahir' => 'required',
-            'NIK' => 'required',
-            'Kelamin' => 'required',
-            'Telepon' => 'required',
-            'Agama' => 'required',
-            'Pendidikan' => 'required',
-            'Pekerjaan' => 'required'
+            'kodepasien' => 'required',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'lahir' => 'required|date',
+            'kelamin' => 'required',
+            'telepon' => 'required',
+            'agama' => 'required',
+            'warna_brosur' => 'required'
         ]);
 
+        // Cari pasien berdasarkan ID
         $pasien = Pasien::find($id);
 
+        // Perbarui data pasien
         $pasien->update([
-            'kodepasien' => $request->Kodepasien,
-            'nama' => $request->Nama,
-            'alamat' => $request->Alamat,
-            'lahir' => $request->Lahir,
-            'nIK' => $request->NIK,
-            'kelamin' => $request->Kelamin,
-            'telepon' => $request->Telepon,
-            'agama' => $request->Agama,
-            'pendidikan' => $request->Pendidikan,
-            'pekerjaan' => $request->Pekerjaan
+            'kodepasien' => $request->kodepasien,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'lahir' => $request->lahir,
+            'kelamin' => $request->kelamin,
+            'telepon' => $request->telepon,
+            'agama' => $request->agama,
+            'warna_brosur' => $request->warna_brosur
         ]);
 
+        // Redirect ke halaman index pasien dengan pesan sukses
         return redirect()->route('pasien.index')->with('success', 'Data telah diubah');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -275,21 +306,23 @@ class PasienController extends Controller
     {
         $validated = $request->validate(
             [
-                "Nama" => 'required',
-                "Lahir" => 'required',
-            ]);
+                "kode" => 'required',
+            ]
+        );
 
-        $nama = $validated['Nama'];
-        $lahir = $validated['Lahir'];
+        $kode = $validated['kode'];
 
-        $data = Pasien::where('nama', $nama)->where('lahir', $lahir)->get();
+        $data = Pasien::where('kodepasien', $kode)->get();
 
+        // dd($data);
         if (count($data) > 0) {
             foreach ($data as $row) :
+                $lahir = new \DateTime($row->lahir);
+                $tgl_lahir = $lahir->format('Y/M(m)/d');
                 return redirect('/pasien-lama')->with([
                     'success' => 'Data ditemukan',
                     'nama' => $row->nama,
-                    'lahir' => $row->lahir->format('d - M(m) - Y'),
+                    'lahir' => $tgl_lahir,
                     'alamat' => $row->alamat,
                     'kelamin' => $row->kelamin,
                     'id' => $row->id
@@ -342,12 +375,10 @@ class PasienController extends Controller
             'Nama' => 'required',
             'Alamat' => 'required',
             'Lahir' => 'required',
-            'NIK' => 'required',
             'Kelamin' => 'required',
             'Telepon' => 'required',
             'Agama' => 'required',
-            'Pendidikan' => 'required',
-            'Pekerjaan' => 'required'
+            'warna_brosur' => 'required'
         ]);
 
         $pasien = Pasien::find($validated['idpasien']);
@@ -355,14 +386,20 @@ class PasienController extends Controller
         $pasien->nama = $validated['Nama'];
         $pasien->alamat = $validated['Alamat'];
         $pasien->lahir = $validated['Lahir'];
-        $pasien->nik = $validated['NIK'];
         $pasien->kelamin = $validated['Kelamin'];
         $pasien->telepon = $validated['Telepon'];
         $pasien->agama = $validated['Agama'];
-        $pasien->pendidikan = $validated['Pendidikan'];
-        $pasien->pekerjaan = $validated['Pekerjaan'];
+        $pasien->warna_brosur = $validated['warna_brosur'];
         $pasien->save();
 
         return back()->with('success', 'Data Terupdate');
+    }
+
+    public function selesai($id)
+    {
+        $antrian = Antrian::findOrFail($id);
+        $antrian->delete();
+
+        return redirect()->back()->with('success', 'Data antrian pasien berhasil dihapus.');
     }
 }

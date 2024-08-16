@@ -15,7 +15,7 @@
                 {{ session('addsuccess') }}
             </div>
         @endif
-        
+
 
         <a href="/tambahpasienadmin" type="button" class="btn btn-success">
             <i class="fas fa-plus text-white"></i> <i class="fas fa-address-book text-white"></i>  Tambah Pasien Baru</a></a>
@@ -61,7 +61,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">
                             <img src="{{ asset('img/logo.png') }}" style=”float:left;
-                                width="55";height="55"” />Klinik Maju Sejahtera
+                                width="55";height="55"” />Klinik Rumah Sehat TCM
                         </h5>
 
                     </div>
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                     </div>
-                    
+
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Daftarkan</button>
                     </div>

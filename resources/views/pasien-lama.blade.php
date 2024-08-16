@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Klinik {{ env('APP_NAME') }}</title>
+    <title>Klinik INTI SEHAT TCM</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <!-- Font Awesome icons (free version)-->
@@ -93,24 +93,11 @@
                 @csrf
                 <!--------------------------------------------------------Nama----------------------------------------------------------------------------------->
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Nama Lengkap</label>
+                    <label class="col-sm-2 col-form-label">Kode Pasien</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" name="Nama" placeholder="Nama Lengkap"
-                            required="required" oninvalid="this.setCustomValidity('Nama tidak boleh kosong')"
+                        <input type="text" class="form-control" name="kode" placeholder="Kode Pasien"
+                            required="required" oninvalid="this.setCustomValidity('Nomer pasien tidak boleh kosong')"
                             oninput="setCustomValidity('')">
-                    </div>
-                </div>
-                </--------------------------------------------------------Lahir-----------------------------------------------------------------------------------* />
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Lahir</label>
-                    <div class="col-sm-5">
-                        <input type="date" class="form-control @error('Lahir') is-invalid @enderror" name="Lahir"
-                            placeholder="Lahir">
-                        @error('Lahir')
-                            <div class="invalid-feedback">
-                                "tanggal lahir masih kosong
-                            </div>
-                        @enderror
                     </div>
                 </div>
                 <br>
@@ -120,7 +107,7 @@
         </form>
     </section>
 
-    
+
 
     <div class="modal fade" id="pasienlamaf" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="antrianLabel" aria-hidden="true">
@@ -130,7 +117,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">
                             <img src="{{ asset('img/logo.png') }}" style=”float:left;
-                                width="55";height="55"” />Klinik {{ env('APP_NAME') }}
+                                width="55";height="55"” />Klinik INTI SEHAT TCM
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -140,7 +127,29 @@
                         <p class="h3" style="color:RED;">Tidak Ditemukan</p>
                         <p class="p" style="color:rgb(129, 129, 129); font-style: italic;">"coba ingat
                             kembali,
-                            apakah anda sudah pernah berobat diklinik {{ env('APP_NAME') }} sebelumnya"</p>
+                            apakah anda sudah pernah berobat diklinik INTI SEHAT TCM sebelumnya"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="penuh" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="antrianLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div id="kartuantrian">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">
+                            <img src="{{ asset('img/logo.png') }}" style=”float:left;
+                                width="55";height="55"” />Klinik INTI SEHAT TCM
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="h3" style="color:RED;">Jadwal Penuh</p>
+                        <p class="p" style="color:rgb(129, 129, 129); font-style: italic;">"Maaf, jadwal ini penuh !!!, Silahkan pilih jadwal lain"</p>
                     </div>
                 </div>
             </div>
@@ -176,7 +185,7 @@
                 <div class="col-lg-4">
                     <h4 class="text-uppercase mb-4">Tentang Klinik</h4>
                     <p class="lead mb-0">
-                        Klinik {{ env('APP_NAME') }} dibangun sejak tahun 2002 yang berada di kecamatan MuaraJawa, Handil Kutai Kartanegara
+                        Klinik INTI SEHAT TCM dibangun sejak tahun 2002 yang berada di kecamatan MuaraJawa, Handil Kutai Kartanegara
                     </p>
                 </div>
             </div>
@@ -184,11 +193,20 @@
     </footer>
     <!--------------------------------------------------------copyright----------------------------------------------------------------------------------->
     <div class="copyright py-4 text-center text-white">
-        <div class="container"><small>Powered by &copy; Klinik {{ env('APP_NAME') }} 2022</small></div>
+        <div class="container"><small>Powered by &copy; Klinik INTI SEHAT TCM 2022</small></div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Warning',
+                text: 'Jam Pemeriksaan Yang anda pilih sudah penuh.'
+            });
+        });
+    </script>
 
-    
+
     <!--------------------------------------------------------modal kartu antrian----------------------------------------------------------------------------------->
     <div class="modal fade" id="antrian" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="antrianLabel" aria-hidden="true">
@@ -198,7 +216,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">
                             <img src="{{ asset('img/logo.png') }}" style=”float:left;
-                                width="55";height="55"” />Klinik {{ env('APP_NAME') }}
+                                width="55";height="55"” />Klinik INTI SEHAT TCM
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -232,7 +250,7 @@
 
     <!--------------------------------------------------------modal kartu pasien----------------------------------------------------------------------------------->
 
-    
+
         <div class="modal fade" id="pasienlamas" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="antrianLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -240,7 +258,7 @@
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">
                                 <img src="{{ asset('img/logo.png') }}" style=”float:left;
-                                    width="55";height="55"” />Klinik {{ env('APP_NAME') }}
+                                    width="55";height="55"” />Klinik INTI SEHAT TCM
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
@@ -255,25 +273,26 @@
                             </p>
                             <p>Kelamin : <span class="text-primary">{{ Session::get('kelamin') }}</span>
                             </p>
-    
+
                             <form action="addrekam" method="POST">
                                 @csrf
                                 <div class="form-group row mt-2">
                                     <input type="text" value="{{ Session::get('id') }}" name="id_player" readonly
                                         hidden>
                                 </div>
-                                <div class="form-group row mt-2">
-                                    <label class="col-form-label col-sm-2 pt-0">Layanan</label>
-                                    <div class="col-sm">
-                                        <select name="layanan" class="form-control " required
-                                            oninvalid="this.setCustomValidity('Pribadi / Asuransi?')"
-                                            oninput="setCustomValidity('')">
-                                            <option value="">pilih layanan...</option>
-                                            <option value="Umum">Umum</option>
-                                            <option value="Asuransi">Asuransi</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <input type="hidden" value="Umum" name="layanan">
+                        {{-- <div class="form-group row mt-2">
+                            <label class="col-form-label col-sm-2 pt-0">Layanan</label>
+                            <div class="col-sm">
+                                <select name="layanan" class="form-control " required
+                                    oninvalid="this.setCustomValidity('pilih layanan dahulu')"
+                                    oninput="setCustomValidity('')">
+                                    <option value="">pilih layanan...</option>
+                                    <option value="Umum">Umum</option>
+                                    <option value="Asuransi">Asuransi</option>
+                                </select>
+                            </div>
+                        </div> --}}
                                 <!--------------------------------------------------------rekam medis----------------------------------------------------------------------------------- -->
                                 <div class="form-group row mt-2">
                                     <label class="col-sm-2 col-form-label">Keluhan</label>
@@ -283,25 +302,38 @@
                                             oninvalid="this.setCustomValidity('jelaskan keluhan anda...')" oninput="setCustomValidity('')"></textarea>
                                     </div>
                                 </div>
-    
+
+                                <div class="form-group row mt-2">
+                                    <label class="col-form-label col-sm-2 pt-0"> Booking Tanggal</label>
+                                    <div class="col-sm">
+                                        <input type="date" class="form-control" name="tanggal" id="tanggal">
+                                    </div>
+                                </div>
+
                                 <!--------------------------------------------------------pilih dokter----------------------------------------------------------------------------------- -->
                                 <div class="form-group row mt-2">
-                                    <label class="col-form-label col-sm-2 pt-0">Dokter</label>
+                                    <label class="col-form-label col-sm-12 pt-0">Yang Menangani </label>
                                     <div class="col-sm">
-                                        <select name="dokter" class="form-control " required
-                                            oninvalid="this.setCustomValidity('pilih dokter yang tersedia...')"
+                                        <select name="dokter" class="form-control" id="dokter" required
+                                            oninvalid="this.setCustomValidity('Silahkan pilih Ahli yang tersedia')"
                                             oninput="setCustomValidity('')">
-                                            <option value="">pilih dokter...</option>
+                                            <option value="">Pilih Ahli...</option>
                                             @foreach ($dokter as $row)
-                                                <option {{ $row->jadwal->jadwalpraktek == 'LIBUR' ? 'disabled' : ''}} {{ $row->jadwal->jadwalpraktek == 'CUTI' ? 'disabled' : ''}} value="{{ $row->id }}">
-                                                    {{ $row->nama }}({{ $row->poli == '' ? '-' : $row->poli->name }}) |
-                                                    {{ $row->jadwal == '' ? 'Belum ada Jadwal' : $row->jadwal->jadwalpraktek }}
+                                                <option value="{{ $row->id }}" data-hari-praktek="{{ $row->hari }}"
+                                                    data-start="{{ $row->start_praktek }}" data-end="{{ $row->end_praktek }}">
+                                                    {{ $row->nama }} | {{ $row->start_praktek .' - '.$row->end_praktek }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-    
+
+                                <div class="form-group row mt-2" id="time-slots-container" style="display: none;">
+                            <label class="col-form-label col-sm-2 pt-0"> Jam Praktek </label>
+                            <div class="col-sm" id="time-slots">
+                                <!-- Time slots will be generated here -->
+                            </div>
+                        </div>
                                 <div class="mt-2 d-flex justify-content-center">
                                     {!! NoCaptcha::renderJs() !!}
                                     {!! NoCaptcha::display() !!}
@@ -310,14 +342,14 @@
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary" >Daftar</button>
                                 </div>
-    
+
                             </form>
-    
-                        
+
+
                     </div>
                 </div>
             </div>
-        
+
     <!--------------------------------------------------------modal error----------------------------------------------------------------------------------->
     <div class="modal fade" id="error" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="antrianLabel" aria-hidden="true">
@@ -327,7 +359,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">
                             <img src="{{ asset('img/logo.png') }}" style=”float:left;
-                                width="55";height="55"” />Klinik {{ env('APP_NAME') }}
+                                width="55";height="55"” />Klinik INTI SEHAT TCM
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -368,6 +400,67 @@
     @endif
 
     <script>
+        document.getElementById('tanggal').addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const selectedDay = selectedDate.toLocaleDateString('id-ID', { weekday: 'long' });
+            const dokterSelect = document.getElementById('dokter');
+            const dokterOptions = dokterSelect.querySelectorAll('option');
+
+            dokterSelect.value = '';
+            dokterOptions.forEach(option => {
+                if (option.value === '') return; // Skip the placeholder option
+
+                const hariPraktek = option.getAttribute('data-hari-praktek').split(',');
+                if (hariPraktek.includes(selectedDay)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('dokter').addEventListener('change', function() {
+            const selectedDate = document.getElementById('tanggal').value;
+            const selectedOption = this.options[this.selectedIndex];
+            const startTime = selectedOption.getAttribute('data-start');
+            const endTime = selectedOption.getAttribute('data-end');
+
+            generateTimeSlots(selectedDate, startTime, endTime);
+        });
+
+        function generateTimeSlots(selectedDate, startTime, endTime) {
+            const container = document.getElementById('time-slots');
+            container.innerHTML = '';
+            document.getElementById('time-slots-container').style.display = 'block';
+
+            let start = new Date(`${selectedDate}T${startTime}`);
+            const end = new Date(`${selectedDate}T${endTime}`);
+            console.log(start,end,start < end);
+            while (start < end) {
+                const nextSlot = new Date(start.getTime() + 35 * 60000); // Add 35 minutes
+                const timeSlot = document.createElement('div');
+                timeSlot.classList.add('form-check', 'form-check-inline');
+
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'time_slot';
+                input.classList.add('form-check-input');
+                input.value = start.toTimeString().substring(0, 5);
+
+                const label = document.createElement('label');
+                label.classList.add('form-check-label');
+                label.textContent = start.toTimeString().substring(0, 5);
+
+                timeSlot.appendChild(input);
+                timeSlot.appendChild(label);
+                container.appendChild(timeSlot);
+
+                start = nextSlot;
+            }
+        }
+    </script>
+
+    <script>
         @if (Session::has('success'))
             $(document).ready(function() {
                 $('#pasienlamas').modal('show')
@@ -375,6 +468,10 @@
         @elseif (Session::has('failed'))
             $(document).ready(function() {
                 $('#pasienlamaf').modal('show')
+            });
+        @elseif (Session::has('warning'))
+            $(document).ready(function() {
+                $('#penuh').modal('show')
             });
         @elseif (Session::has('addsuccess'))
             $(document).ready(function() {

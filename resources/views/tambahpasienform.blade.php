@@ -14,6 +14,33 @@
         <br>
         <form action="tambahpasien" method="post">
             @csrf
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Warna Brosur</label>
+                <div class="col-sm-5">
+                    @php
+                        $warna = [
+                            'Ungu',
+                            'Biru',
+                            'Hitam',
+                            'Oren',
+                            'Hijau',
+                            'Pelangi',
+                            'Cokelat',
+                            'Ungu',
+                            'Merah',
+                        ]
+                    @endphp
+                    <select name="warna_brosur" class="form-control " required
+                        oninvalid="this.setCustomValidity('Warna Brosur tidak boleh kosong')"
+                        oninput="setCustomValidity('')">
+
+                        <option selected value="">pilih...</option>
+                        @foreach ($warna as $war)
+                        <option value="{{ $war }}">{{ $war }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             </--------------------------------------------------------Nama-----------------------------------------------------------------------------------* />
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Nama</label>
@@ -46,20 +73,6 @@
                     @error('Lahir')
                         <div class="invalid-feedback">
                             "tanggal lahir masih kosong
-                        </div>
-                    @enderror
-                </div>
-            </div>
-
-            </--------------------------------------------------------NIK-----------------------------------------------------------------------------------* />
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">NIK (Kartu Keluarga)</label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control @error('NIK') is-invalid @enderror" id="nonik"
-                        name="NIK" placeholder="NIK" value="{{ old('NIK') }}">
-                    @error('NIK')
-                        <div class="invalid-feedback">
-                            "nomor induk masih kosong
                         </div>
                     @enderror
                 </div>
@@ -123,20 +136,6 @@
                 </div>
             </div>
             <br>
-
-            </--------------------------------------------------------Pendidikan-----------------------------------------------------------------------------------* />
-            <div class="form-group row">
-                <label class="col-form-label col-sm-2 pt-0">Pendidikan</label>
-                <div class="col-sm-5">
-                    <select name="Pendidikan" class="form-control @error('Pendidikan') is-invalid @enderror">
-                        <option value="-">-</option>
-                        <option value="sltp/sd-smp" {{ old('Pendidikan') != 'sltp/sd-smp' ?: 'selected' }}>SLTP / SD-SM</option>
-                        <option value="slta/sma" {{ old('Pendidikan') != 'slta/sma' ?: 'selected' }}>SLTA / SMA</option>
-                        <option value="sarjana" {{ old('Pendidikan') != 'sarjana' ?: 'selected' }}>Sarjana</option>
-                    </select>
-                </div>
-            </div>
-
             </--------------------------------------------------------Pekerjaan-----------------------------------------------------------------------------------* />
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Pekerjaan</label>
@@ -153,23 +152,12 @@
             </div>
 
             <!--------------------------------------------------------pilih layanan----------------------------------------------------------------------------------- -->
-            <div class="form-group row mt-2">
-                <label class="col-form-label col-sm-2 pt-0">Layanan</label>
-                <div class="col-sm-3">
-                    <select name="layanan" class="form-control "
-                    required oninvalid="this.setCustomValidity('pilih...')"
-                                    oninput="setCustomValidity('')">
-                        <option value="">pilih layanan...</option>
-                        <option value="Umum">Umum</option>
-                        <option value="Asuransi">Asuransi</option>
-                    </select>
-                </div>
-            </div>
+            <input type="hidden" value="Umum" name="layanan">
             <!--------------------------------------------------------rekam medis----------------------------------------------------------------------------------- -->
             <div class="form-group row mt-2">
                 <label class="col-sm-2 col-form-label">Keluhan</label>
                 <div class="col-sm-5">
-                        <textarea type="text" name="RekamMedis" class="form-control" cols="30" rows="5" 
+                        <textarea type="text" name="RekamMedis" class="form-control" cols="30" rows="5"
                         placeholder="Masukkan keluhan si pasien, dan sudah berapa lama?"
                         required oninvalid="this.setCustomValidity('isi...')"
                                     oninput="setCustomValidity('')"></textarea>
@@ -184,7 +172,7 @@
                     required oninvalid="this.setCustomValidity('pilih dokter yang memeriksa...')"
                                     oninput="setCustomValidity('')">
                         <option selected value="">Pilih dokter..</option>
-                        
+
                         @foreach($dokter as $row)
                         <option value= "{{ $row->id }}">{{ $row->nama }}({{ $row->poli == '' ? '-' : $row->poli->name }})  | {{ $row->jadwal == '' ? 'Belum ada Jadwal' : $row->jadwal->jadwalpraktek }}</option>
 

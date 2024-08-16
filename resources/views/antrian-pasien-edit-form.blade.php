@@ -1,5 +1,7 @@
+@extends('layouts.main')
+@section('content')
+
 <title>Antrian : {{ $rekam->pasien->nama }}</title>
-    @include('partials.navdashboard')
 
     @if ($errors->any())
         @foreach ($errors->all() as $item)
@@ -46,10 +48,11 @@
             <h4>==== Perubahan Data Pendaftaran ====</h4>
             <br>
             <!--------------------------------------------------------Layanan----------------------------------------------------------------------------------- -->
-            <div class="form-group row">
+           <input type="hidden" name="layanan" value="Umum">
+            {{-- <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Jenis layanan</label>
                 <div class="col-sm-5">
-                    <select name="layanan" id="">
+                    <select name="layanan" id="" class="form-control">
                         @if($rekam->layanan == 'Umum')
                             <option value="-">Pilih layanan..</option>
                             <option value="Umum" selected>{{ $rekam->layanan }}</option>
@@ -65,7 +68,7 @@
                         @endif
                     </select>
                 </div>
-            </div>
+            </div> --}}
 
             <!--------------------------------------------------------keluhan pasien----------------------------------------------------------------------------------- -->
             <div class="form-group row mt-2">
@@ -80,7 +83,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Dokter</label>
                 <div class="col-sm-5">
-                    <select name="dokter" id="">
+                    <select name="dokter" id="" class="form-control">
                         <option value="">Pilih dokter</option>
                         @foreach($dokter as $row)
                         <option value="{{ $row->id }}" {{ $rekam->dokter != '' ?? $row->dokter->id == $row->id ? 'selected' : ''}}> {{ $row->nama .' |'}} {{ $row->jadwal == '' ? 'Belum ada Jadwal' : $row->jadwal->jadwalpraktek }}</option>
@@ -134,4 +137,5 @@
             return /^-?\d*$/.test(value);
         }, "Isi dengan Angka");
     </script>
+@endsection
 

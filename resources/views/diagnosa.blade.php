@@ -1,4 +1,4 @@
-<title>Pasien Sebelum di Diagnosa</title>
+<title>Pemeriksaan selesai</title>
 @extends('layouts.main')
 @section('content')
     @if ($errors->any())
@@ -15,7 +15,7 @@
         </div>
     @endif
     <div class="container">
-        <h1>Data Diagnosa Pasien</h1>
+        <h1>Pasien Dalam Pengobatan</h1>
         </-------------------------------------------------------- Tabel
             -----------------------------------------------------------------------------------* />
         <br />
@@ -24,7 +24,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>No</th>
-                        <th>Diagnosa</th>
+                        <th>Status</th>
                         <th>Nomer Antrian</th>
                         <th>Kode Pasien</th>
                         <th>Nama</th>
@@ -41,7 +41,7 @@
                     @foreach($data as $row)
                     <tr>
                         <td>{{ $count=$count+1 }}</td>
-                        <td> 
+                        <td>
                             <a href="{{ route('diagnosatools.edit', $row->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Tambah Diagnosa Pasien" class="btn btn-success">
                                 <i class="fas fa-stethoscope text-white"></i>
                             </a>
@@ -49,8 +49,11 @@
                         <td>{{ $row->nomorantrian }}</td>
                         <td>{{ $row->pasien == '' ? 'Belum ada kode' : $row->pasien->kodepasien }}</td>
                         <td>{{ $row->pasien->nama }}</td>
-                        <td>{{ $row->pasien->lahir->format('d/M/Y'); }}</td>
-                        <td>{{ $row->pasien->lahir->age }} Tahun</td>
+                        <td>{{ $row->pasien->lahir }}</td>
+                        @php
+                            $age = \Carbon\Carbon::parse($row->pasien->lahir)->age;
+                        @endphp
+                        <td>{{ $age }} Tahun</td>
                         <td>{{ $row->layanan }}</td>
                         <td>{{ $row->keluhan }}</td>
                     </tr>
@@ -75,13 +78,13 @@
                             extend: 'excel',
                             text: 'Excel',
                             messageTop: 'Data Antrian Harian per Tanggal '+'{{  \Carbon\Carbon::now()->format("d-M(m)-Y") }}'
-                            
+
                         },
                         {
                             extend: 'copy',
                             text: 'Copy Isi',
                             messageTop: 'Data Antrian Harian per Tanggal '+'{{  \Carbon\Carbon::now()->format("d-M(m)-Y") }}'
-                            
+
                         },
                     ],
                     language: {

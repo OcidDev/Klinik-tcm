@@ -18,7 +18,7 @@
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-hospital"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">KLINIK {{ env("APP_NAME") }} </div>
+                <div class="sidebar-brand-text mx-3">KLINIK INTI SEHAT TCM </div>
             </a>
 
             <!-- Divider -->
@@ -105,7 +105,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/pegawai">
                     <i class="fa fa-id-card"></i>
-                    <span>Pegawai</span></a>
+                    <span>Keuangan</span></a>
             </li>
 
             <li class="nav-item">
@@ -141,7 +141,7 @@
             <li class="nav-item">
                 <div class="sidebar-card d-none d-lg-flex">
                     <img class="sidebar-card-illustration mb-2" src={{ asset ("img/logo.png") }} alt="...">
-                    <p class="text-center mb-2"><strong></strong>Klinik {{ env("APP_NAME") }}</p>
+                    <p class="text-center mb-2"><strong></strong>Klinik INTI SEHAT TCM</p>
                     <a class="btn btn-success btn-sm" href="/">Ke Beranda</a>
                 </div>
 
@@ -157,7 +157,7 @@
             </li>
 
             <div class="sidebar-heading">
-                Powered by &copy; KLINIK {{ env("APP_NAME") }} <br>2022
+                Powered by &copy; KLINIK INTI SEHAT TCM <br>2022
             </div>
 
         </ul>

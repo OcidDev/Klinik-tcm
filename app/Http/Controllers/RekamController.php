@@ -39,6 +39,7 @@ class RekamController extends Controller
      */
     public function store(Request $request)
     {
+        // \dd($request->all());
         $validate = $request->validate([
             'id_player' => 'required',
             'layanan' => 'required',
@@ -55,9 +56,13 @@ class RekamController extends Controller
         );
 
         $nomorAntrian = 1;
-        $cekData = Rekam::whereDate('created_at', Carbon::today())->latest()->first();
-        if ($cekData) {
-            $nomorAntrian = $cekData->nomorantrian + 1;
+        // cek duplikat jam
+        $timeSelected = $request->tanggal . ' ' . $request->time_slot . ':00';
+        $dataCek = Rekam::where('created_at', $timeSelected)->first();
+        // dd($dataCek);
+        if ($dataCek !== null) {
+            session()->flash('warning', 'Jam Pemeriksaan Yang anda pilih sudah penuh.');
+            return redirect()->back();
         }
 
         $Rekam = Rekam::create([

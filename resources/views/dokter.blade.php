@@ -1,4 +1,4 @@
-<title>Dokter</title>
+<title>Ahli</title>
 @extends('layouts.main')
 @section('content')
     @if ($errors->any())
@@ -15,13 +15,13 @@
         </div>
     @endif
     <div class="container">
-        <h1>Data Dokter</h1>
+        <h1>Data Ahli Yang Menangani</h1>
         <br>
 
         </-------------------------------------------------------- Tabel
             -----------------------------------------------------------------------------------* />
         <a href="/dokter/create" type="button" class="btn btn-success">
-            <i class="fas fa-plus text-white"></i> <i class="fas fa-user-md text-white"></i>  Tambah Dokter</a>
+            <i class="fas fa-plus text-white"></i> <i class="fas fa-user-md text-white"></i>  Tambah Ahli</a>
         <br />
         <div class="table-responsive">
             <table class="table table-flush" id="products-list">
@@ -30,9 +30,10 @@
                         <th>No</th>
                         <th>Nama</th>
                         <th>Alamat</th>
-                        <th>Spesialis</th>
+                        {{-- <th>Spesialis</th> --}}
                         <th>Nomer Telepon</th>
-                        <th>Jadwal Praktek</th>
+                        <th>Hari Praktek</th>
+                        <th>Jam Praktek</th>
                         <th>Tools</th>
                     </tr>
                 </thead>
@@ -42,9 +43,11 @@
                             <td> {{ $loop->iteration }} </td>
                             <td> {{ $d->nama }} </td>
                             <td> {{ $d->alamat }} </td>
-                            <td> {{ $d->poli->name ?? "Poli kosong"}} </td>
+                            {{-- <td> {{ $d->poli->name ?? "Poli kosong"}} </td> --}}
                             <td> {{ $d->telepon }} </td>
-                            <td> {{ $d->jadwal->jadwalpraktek ?? "jadwal kosong"}} </td>
+                            <td> {{ $d->hari }} </td>
+                            <td> {{ $d->start_praktek .' - '.$d->end_praktek }} </td>
+                            {{-- <td> {{ $d->jadwal->jadwalpraktek ?? "jadwal kosong"}} </td> --}}
 
                             </-------------------------------------------------------- edit
                                 -----------------------------------------------------------------------------------* />
@@ -95,7 +98,7 @@
                         },
                     ],
                     language: {
-                        "searchPlaceholder": "Cari nama dokter",
+                        "searchPlaceholder": "Cari nama ahli",
                         "zeroRecords": "Tidak ditemukan data yang sesuai",
                         "emptyTable": "Tidak terdapat data di tabel"
                     }

@@ -15,49 +15,38 @@
         </div>
     @endif
     <div class="container">
-        <h1>Database Pasien</h1>
-        <h3>Klinik {{ env("APP_NAME") }}</h3>
+        <h1>Data Pendaftaran Pasien Keseluruhan</h1>
+        <h3>RUMAH SEHAT HERBAL INTI SEHAT TCM</h3>
         <br>
 
         </-------------------------------------------------------- Tabel
             -----------------------------------------------------------------------------------* />
-        <a href="/tambahpasienadmin" type="button" class="btn btn-success">
-            <i class="fas fa-plus text-white"></i> <i class="fas fa-address-book text-white"></i>  Tambah Pasien</a>
+        <a href="#n" type="button" class="">
+        </a>
         <br />
         <div class="table-responsive">
             <table class="table table-flush" id="products-list">
                 <thead class="thead-dark">
                     <tr>
                         <th>No</th>
+                        <th>Tools</th>
+                        <th>Tanggal Daftar</th>
                         <th>Kode Pasien</th>
                         <th>Nama</th>
                         <th>Alamat</th>
                         <th>Tanggal Lahir</th>
-                        <th>NIK</th>
                         <th>Jenis Kelamin</th>
                         <th>Nomer Telepon</th>
                         <th>Agama</th>
-                        <th>Pendidikan</th>
                         <th>Pekerjaan</th>
-                        <th>Tools</th>
+                        <th>Warna Brosur</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{-- @dd($datapasien) --}}
                     @foreach ($datapasien as $p)
                         <tr>
                             <td> {{ $loop->iteration }} </td>
-                            <td> <a href="{{ route('pasien.edit', $p->id) }}" data-bs-toggle="tooltip" data-bs-original-title="Lihat Pasien">
-                                <i class="fas fa-book text-success"></i>{{ $p->kodepasien }} </td>
-                            <td> {{ $p->nama }} </td>
-                            <td> {{ $p->alamat }} </td>
-                            <td> {{ $p->lahir->format('Y/M(m)/d') }} </td>
-                            <td> {{ $p->nik }} </td>
-                            <td> {{ $p->kelamin }} </td>
-                            <td> {{ $p->telepon }} </td>
-                            <td> {{ $p->agama }} </td>
-                            <td> {{ $p->pendidikan }} </td>
-                            <td> {{ $p->pekerjaan }} </td>
-
                             </-------------------------------------------------------- edit
                                 -----------------------------------------------------------------------------------* />
                             <td class="text-sm">
@@ -69,8 +58,24 @@
                                     <button type="submit" class="btn btn-danger"
                                         onClick="return confirm('Yakin ingin hapus data?')">
                                         <i class="fas fa-trash"></i></button>
-
                                 </form>
+                                <a href="{{ route('print-antrian', $p->id) }}" target="_blank" class="btn btn-success" data-bs-toggle="tooltip" data-bs-original-title="Lihat Pasien">
+                                    <i class="fa fa-print"></i>
+                                </a>
+                            <td> {{ $p->created_at }}</td>
+                            <td> {{ $p->kodepasien }} </td>
+                            <td> {{ $p->nama }} </td>
+                            <td> {{ $p->alamat }} </td>
+                            @php
+                                 $lahir = new \DateTime($p->lahir);
+                                 $tgl_lahir = $lahir->format('Y/M(m)/d');
+                            @endphp
+                            <td> {{ $tgl_lahir }} </td>
+                            <td> {{ $p->kelamin }} </td>
+                            <td> {{ $p->telepon }} </td>
+                            <td> {{ $p->agama }} </td>
+                            <td> {{ $p->pekerjaan }} </td>
+                            <td> {{ $p->warna_brosur }} </td>
                             </td>
                         </tr>
                     @endforeach
@@ -98,7 +103,7 @@
                         {
                             extend: 'copy',
                             text: 'Copy Isi',
-                            messageTop: 'Data Pasien di Copy pada Tanggal '+'{{  \Carbon\Carbon::now()->format("d-M(m)-Y") }}'                 
+                            messageTop: 'Data Pasien di Copy pada Tanggal '+'{{  \Carbon\Carbon::now()->format("d-M(m)-Y") }}'
                         },
                     ],
                     language: {

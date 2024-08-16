@@ -48,9 +48,11 @@ class DokterController extends Controller
             
             'Nama' => 'required',
             'Alamat' => 'required',
-            'Spesialis' => 'required',
+            // 'Spesialis' => 'required',
             'Telepon' => 'required',
-            'Jadwal' => 'required'
+            'hari' => 'required',
+            'start_praktek' => 'required',
+            'end_praktek' => 'required'
 
         ]);
 
@@ -60,8 +62,11 @@ class DokterController extends Controller
             'alamat'=>$request->Alamat,            
             'id_poli'=>$request->Spesialis,            
             'telepon'=>$request->Telepon,
-            'jadwalpraktek'=>$request->Jadwal
-
+            'id_poli'=> 1,
+            'jadwalpraktek'=> 1,
+            'hari'=>$request->hari,
+            'start_praktek'=>$request->start_praktek,
+            'end_praktek'=>$request->end_praktek
         ]);
      
 
@@ -103,15 +108,17 @@ class DokterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request);
+        // dd($request->all());
         $this->validate($request, [
             
             'Nama' => 'required',
             'Alamat' => 'required',
-            'Spesialis' => 'required',
+            // 'Spesialis' => 'required',
+            // 'id_poli'=> 1,
             'Telepon' => 'required',
-            'Jadwal' => 'required'
-
+            'hari' => 'required',
+            'start_praktek' => 'required',
+            'end_praktek' => 'required'
         ]);
 
         $dokteredit = $request->all();
@@ -121,10 +128,12 @@ class DokterController extends Controller
           
             'nama'=>ucwords(strtolower($request->Nama)),
             'alamat'=>$request->Alamat,            
-            'id_poli'=>$request->Spesialis,            
+            'id_poli'=>1,            
             'telepon'=>$request->Telepon,
-            'jadwalpraktek'=>$request->Jadwal
-
+            'jadwalpraktek'=> 1,
+            'hari'=>$request->hari,
+            'start_praktek'=>$request->start_praktek,
+            'end_praktek'=>$request->end_praktek
         ]);
 
         return redirect()->route('dokter.index')->with('success', 'Data telah diubah');

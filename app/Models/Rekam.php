@@ -24,7 +24,10 @@ class Rekam extends Model
         'darah',
         'berat',
         'tinggi',
-        'pinggang'
+        'pinggang',
+        'laporan',
+        'created_at',
+        'updated_at',
     ];
     protected $guarded =['id'];
     protected $dates = ['jadwal_kedatangan'];

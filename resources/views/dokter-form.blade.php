@@ -1,20 +1,21 @@
 <title>Dokter Baru</title>
-    @include('partials.navdashboard')
-    
+@extends('layouts.main')
+@section('content')
+
     @if ($errors->any())
     @foreach ($errors->all() as $item)
     <div class="alert alert-danger" role="alert">
         {{ $item }}
     </div>
     @endforeach
-    
+
     @endif
     <div class="container">
-        <h1>Dokter Baru</h1>
+        <h1>Ahli Baru</h1>
         <br>
         <form action="{{ route('dokter.store') }}" method="post">
             @csrf
-     
+
             </--------------------------------------------------------Nama-----------------------------------------------------------------------------------* />
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Nama</label>
@@ -37,25 +38,6 @@
                 </div>
             </div>
 
-
-        </--------------------------------------------------------Spesialis-----------------------------------------------------------------------------------* />
-            <div class="form-group row">
-                <label class="col-form-label col-sm-2 pt-0">Spesialis</label>
-                <div class="col-sm-3">
-                    <select name="Spesialis" class="form-control @error('Spesialis') is-invalid @enderror">
-                        <option selected value="">pilih poli / spesialis</option>
-                        @foreach($poli as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('Spesialis')
-                        <div class="invalid-feedback">
-                            "spesialis belum diisi
-                        </div>
-                    @enderror
-                </div>
-            </div>
-
             </--------------------------------------------------------Telepon-----------------------------------------------------------------------------------* />
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Telepon</label>
@@ -69,10 +51,45 @@
                     @enderror
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Hari Praktek</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control @error('hari') is-invalid @enderror" id="notelp"
+                        name="hari" placeholder="Hari" value="{{ old('Hari') }}">
+                    @error('hari')
+                        <div class="invalid-feedback">
+                            "Hari Praktek masih kosong
+                        </div>
+                    @enderror
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <label class="col-form-label">Start Praktek</label>
+                    <input type="time" class="form-control @error('start_praktek') is-invalid @enderror" id="notelp"
+                        name="start_praktek" placeholder="Start Praktek" value="{{ old('start_praktek') }}">
+                    @error('start_praktek')
+                        <div class="invalid-feedback">
+                            "Start Praktek masih kosong
+                        </div>
+                    @enderror
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label">End Praktek</label>
+                    <input type="time" class="form-control @error('end_praktek') is-invalid @enderror" id="notelp"
+                        name="end_praktek" placeholder="end Praktek" value="{{ old('end_praktek') }}">
+                    @error('end_praktek')
+                        <div class="invalid-feedback">
+                            "End Praktek masih kosong
+                        </div>
+                    @enderror
+                </div>
+            </div>
 
 
         </--------------------------------------------------------Jadwal Praktek-----------------------------------------------------------------------------------* />
-            <div class="form group row">
+
+            {{-- <div class="form group row">
                 <label class="col-form-label col-sm-2 pt-0">Jadwal Praktek</label>
                 <div class="col-sm-8">
                     <select name="Jadwal" class="form-control @error('Jadwal') is-invalid @enderror">
@@ -87,9 +104,9 @@
                         </div>
                     @enderror
                 </div>
-            </div>
+            </div> --}}
             <br>
-            
+
 
             <div class="form-group row">
                 <div class="col-sm-10">
@@ -99,3 +116,4 @@
             </div>
         </form>
     </div>
+@endsection

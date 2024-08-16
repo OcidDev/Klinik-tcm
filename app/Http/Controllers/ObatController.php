@@ -67,7 +67,7 @@ class ObatController extends Controller
             'expired' => $request->expired,
             'stok' => $request->stok,
             'dosis' => $request->dosis,
-            'photo' => $request->image,
+            'photo' => $profileImage,
             'harga' => $request->harga
         ]);
 

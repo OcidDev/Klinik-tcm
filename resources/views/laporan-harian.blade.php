@@ -1,4 +1,4 @@
-<title>Laporan Diagnosa Harian </title>
+<title>Laporan Harian Pasien</title>
 @extends('layouts.laporan-main')
 @section('content')
     @if ($errors->any())
@@ -14,71 +14,79 @@
             {{ session('success') }}
         </div>
     @endif
+
     <div class="container">
         <form action="/clearlaporan" method="POST">
             @csrf
-            <button type="submit" class="btn btn-danger"
-                onClick="return confirm('Yakin ingin clear data?')">Clear Laporan</button>
+            <button type="submit" class="btn btn-danger" onClick="return confirm('Yakin ingin clear data?')">Clear Laporan</button>
+        </form>
+
+        <form action="" method="get">
+            @csrf
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="month" name="month" value="{{ Request::get('month') }}" class="form-control" >
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
         <h1>Laporan Pasien Harian</h1>
-        </-------------------------------------------------------- Tabel
-            -----------------------------------------------------------------------------------* />
         <br />
         <div class="table-responsive">
             <table class="table table-flush" id="products-list">
                 <thead class="thead-dark">
                     <tr>
-                        <th>No</th>
+                        <th>Tools</th>
                         <th>Tanggal Daftar</th>
-                        <th>Nama</th>
-                        <th>Nomer NIK</th>
-                        <th>Tanggal Lahir</th>
                         <th>Kode Pasien</th>
+                        <th>Nama</th>
+                        <th>Tanggal Lahir</th>
                         <th>Lama/Baru</th>
                         <th>Jenis Kelamin</th>
-                        <th>R.Jalan/R.Inap</th>
-                        <th>Diagnosa</th>
                         <th>Alamat Rumah</th>
                         <th>No Handphone</th>
-                        <th>Status Pendidikan</th>
                         <th>Pekerjaan</th>
-                        <th>Gol. Darah</th>
-                        <th>Tinggi Badan</th>
-                        <th>Berat Badan</th>
-                        <th>Lingkar Pinggang</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $count = 0;
+                    @endphp
                     @foreach($data as $r)
-                    <tr>
-                        <td>{{ $count = $count + 1 }}</td>
-                        <td>{{ $r->created_at->format('d/m/Y -- H:i') }}</td>
-                        <td>{{ $r->pasien->nama }}</td>
-                        <td>{{ $r->pasien->nik }}</td>
-                        <td>{{ $r->pasien->lahir->format('d/m/Y') }}</td>
-                        <td>{{ $r->pasien->kodepasien }}</td>
-                        <td>{{ $r->lamabaru == '' ? '-' : $r->lamabaru }}</td>
-                        <td>{{ $r->pasien->kelamin }}</td>
-                        <td>{{ $r->rawat == '' ? '-' : $r->rawat }}</td>
-                        <td>{{ $r->diagnosa }}</td>
-                        <td>{{ $r->pasien->alamat }}</td>
-                        <td>{{ $r->pasien->telepon }}</td>
-                        <td>{{ $r->pasien->pendidikan }}</td>
-                        <td>{{ $r->pasien->pekerjaan }}</td>
-                        <td>{{ $r->darah== '' ? '-' : $r->darah}}</td>
-                        <td>{{ $r->tinggi== '' ? '-' : $r->tinggi }} Cm</td>
-                        <td>{{ $r->berat== '' ? '-' : $r->berat }} Kg</td>
-                        <td>{{ $r->pinggang== '' ? '-' : $r->pinggang }} Cm</td>
-                    </tr>
+                        <tr>
+
+                            <td>
+                                <form action="{{ route('pasien.selesai', $r->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                                <a href="{{ route('print-antrian', $r->id) }}" target="_blank" class="btn btn-success" data-bs-toggle="tooltip" data-bs-original-title="Lihat Pasien">
+                                    <i class="fa fa-print"></i>
+                                </a>
+                            </td>
+                            <td>{{ $r->created_at }}</td>
+                            <td>{{ $r->pasien->kodepasien }}</td>
+                            <td>{{ $r->pasien->nama }}</td>
+                            <td>{{ $r->pasien->lahir }}</td>
+                            <td>{{ $r->lamabaru == '' ? '-' : $r->lamabaru }}</td>
+                            <td>{{ $r->pasien->kelamin }}</td>
+                            <td>{{ $r->pasien->alamat }}</td>
+                            <td>{{ $r->pasien->telepon }}</td>
+                            <td>{{ $r->pasien->pekerjaan }}</td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-
-
-
     </div>
+
     @push('scripts')
         <script>
             $(document).ready(function() {
@@ -88,25 +96,21 @@
                         [50, 100, 200, -1],
                         ['50', '100', '200', 'All']
                     ],
-                    buttons: [{
+                    buttons: [
+                        {
                             extend: 'excel',
                             text: 'Excel',
-                            messageTop: 'Laporan Diagnosa Harian Tanggal'+'{{  \Carbon\Carbon::now()->format("d-M(m)-Y") }}'
-                            
+                            messageTop: 'Laporan Diagnosa Harian Tanggal ' + '{{ \Carbon\Carbon::now()->format("d-M(m)-Y") }}'
                         },
                         {
                             extend: 'copy',
                             text: 'Copy Isi',
-                            
                         },
-                        
-
                     ],
-        
                     language: {
-                        "searchPlaceholder": "Cari nama pasien",
-                        "zeroRecords": "Tidak ditemukan data yang sesuai",
-                        "emptyTable": "Tidak terdapat data di tabel"
+                        searchPlaceholder: 'Cari nama pasien',
+                        zeroRecords: 'Tidak ditemukan data yang sesuai',
+                        emptyTable: 'Tidak terdapat data di tabel'
                     }
                 });
             });

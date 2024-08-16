@@ -6,9 +6,11 @@ use App\Models\Dokter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Rekam; 
-use App\Models\Obat; 
-use App\Models\Pasien; 
+use App\Models\Rekam;
+use App\Models\Obat;
+use App\Models\Pasien;
+use DateTime;
+use PDF;
 
 class DashboardController extends Controller
 {
@@ -96,8 +98,16 @@ class DashboardController extends Controller
     }
 
     public function antrianpasien(){
-    $data =Rekam::where('diagnosa', null)->get();
+        $data = Rekam::where('diagnosa', null)->get();
         return view('antrian-pasien-admin', [
+            'datarekam' => $data
+        ]);
+    }
+
+    public function printAntrian($id){
+        $data = Rekam::find($id);
+        // dd($data['peminjaman']);
+        return view('print-antrian-pasien', [
             'datarekam' => $data
         ]);
     }
@@ -170,14 +180,14 @@ class DashboardController extends Controller
         $data = Rekam::where('diagnosa', null)->get();
         return view('diagnosa', [
             'data' => $data
-        ]); 
+        ]);
     }
 
     public function diagnosaform($id){
         $data = DB::table('rekams')->where('id', $id)->get();
         return view('diagnosa-form', [
             'data' => $data
-        ]); 
+        ]);
     }
 
     public function tambahpasienform(){
@@ -192,35 +202,35 @@ class DashboardController extends Controller
             'Nama' => 'required',
             'Alamat' => 'required',
             'Lahir' => 'required',
-            'NIK' => 'required',
             'Kelamin' => 'required',
             'Telepon' => 'required',
             'Agama' => 'required',
-            'Pendidikan' => 'required',
             'Pekerjaan' => 'required',
             'layanan' => 'required',
             'RekamMedis' => 'required',
-            'dokter' => 'required'
+            'dokter' => 'required',
+            'warna_brosur' => 'required'
         ]);
 
         $Pasien= Pasien::create([
             'nama'=>ucwords(strtolower($request->Nama)),
-            'alamat'=>$request->Alamat,            
-            'lahir'=>$request->Lahir,            
-            'nik'=>$request->NIK,
+            'alamat'=>$request->Alamat,
+            'lahir'=>$request->Lahir,
             'kelamin'=>$request->Kelamin,
             'telepon'=>$request->Telepon,
             'agama'=>$request->Agama,
-            'pendidikan'=>$request->Pendidikan,
-            'pekerjaan'=>$request->Pekerjaan
+            'pekerjaan'=>$request->Pekerjaan,
+            'warna_brosur'=>$request->warna_brosur
         ]);
 
         // $kode= 100000+ (integer)$Pasien -> id;
         // $nomer= substr($kode, 1, 5). $Pasien -> lahir -> format ('dmy');
         // $Pasien -> kodepasien = $nomer ;
         // $Pasien -> save();
-        
-        $nomer= $Pasien -> lahir -> format ('dmy');
+        // dd($request->all(),$Pasien);
+
+        $lahir = new DateTime($Pasien->lahir);
+        $nomer = $lahir->format('dmy');
         $Pasien -> kodepasien = $nomer ;
         $Pasien -> save();
 
@@ -274,8 +284,8 @@ class DashboardController extends Controller
         $validated = $request->validate([
             'idrekam' => 'required',
             'layanan' => 'required',
-            'keluhan' => 'required', 
-            'dokter' => 'required', 
+            'keluhan' => 'required',
+            'dokter' => 'required',
             'diagnosa' => 'required',
             'idpasien' => 'required',
             // 'obat' => '',
@@ -286,9 +296,9 @@ class DashboardController extends Controller
             // 'Tinggi' => '',
             // 'Berat' => '',
             // 'LingkarBadan' => ''
-        ]); 
-        
-        
+        ]);
+
+
         $rekam = Rekam::find($validated['idrekam']);
 
         if($request->obat != '' && $request->jumlahobat != '')
@@ -319,10 +329,18 @@ class DashboardController extends Controller
         return back()->with('success', 'Data terupdate');
     }
 
-    public function indexlaporan()
+    public function indexlaporan(Request $request)
     {
+        // dd()
+        if ($request->month != null) {
+            $pisah = explode('-',$request->month);
+            $data = Rekam::where('laporan', 1)->whereYear('created_at',$pisah[0])->whereMonth('created_at',$pisah[1])->get();
+        }else{
+            $data = Rekam::where('laporan', 1)->get();
+        }
+        // dd($data);
         return view('laporan-harian',[
-            'data' => Rekam::where('laporan', 1)->whereNotNull('diagnosa')->get(),
+            'data' => $data,
             'count' => 0
         ]);
     }

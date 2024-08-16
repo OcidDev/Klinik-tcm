@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Klinik {{ env('APP_NAME') }}</title>
+    <title>Klinik INTI SEHAT TCM</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <!-- Font Awesome icons (free version)-->
@@ -28,7 +28,7 @@
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="/#page-top"><img src="{{ asset('img/logo.png') }}" style=”float:left;
-                    width="55";height="55"” />KLINIK {{ env('APP_NAME') }}</a>
+                    width="55";height="55"” />KLINIK INTI SEHAT TCM</a>
             <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -94,12 +94,39 @@
                 </thead>
                 <tbody>
                     @foreach ($datarekam as $row)
-                        <tr>
-                            <td> {{ $row->nomorantrian }} </td>
-                            <td> {{ $row->pasien->nama }}</td>
-                            <td> {{ $row->pasien->lahir->age }} Tahun</td>
-                            <td> {{ $row->updated_at->format('H:i:s -- d/m/Y') }}</td>
-                        </tr>
+                         @php
+                            $cekPembayaran = App\Models\Keuangan::where('id_antrian', $row->id)->first();
+                            $hideRow = false;
+                            $minutesDiff = null;
+                            $minute = null;
+
+                            if ($cekPembayaran != null && $cekPembayaran->status == 2) {
+                                $now = \Carbon\Carbon::now()->setTimezone(config('app.timezone'));
+                                $updatedAt = \Carbon\Carbon::parse($cekPembayaran->updated_at)->setTimezone(
+                                    config('app.timezone'),
+                                );
+                                $minutesDiff = $now->diffInMinutes($updatedAt);
+
+                                $pisah = explode('-',round($minutesDiff));
+                                // dd($pisah[1]);
+                                $minute = $pisah[1];
+                                if ($minute > 35) {
+                                    $hideRow = true;
+                                }
+                            }
+                        @endphp
+
+                        @if (!$hideRow)
+                            <tr>
+                                <td> {{ $row->nomorantrian }} </td>
+                                <td> {{ $row->pasien->nama }}</td>
+                                @php
+                                    $agerek = \Carbon\Carbon::parse($row->pasien->lahir)->age;
+                                @endphp
+                                <td> {{ $agerek }} Tahun</td>
+                                <td> {{ $row->updated_at->format('H:i:s -- d/m/Y') }}</td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
@@ -110,7 +137,7 @@
 
     <!--------------------------------------------------------copyright----------------------------------------------------------------------------------->
     <div class="copyright py-4 text-center text-white">
-        <div class="container"><small>Powered by &copy; Klinik {{ env('APP_NAME') }} 2022</small></div>
+        <div class="container"><small>Powered by &copy; {{ date('Y') }} | Rumah Sehat Herbal Inti Sehat TCM. All rights reserved.</small></div>
     </div>
     @push('scripts')
 
@@ -158,7 +185,7 @@
                 updateClock();
                 window.setInterval("updateClock()", 1);
             }
-            
+
             // <!--------------------------------------------------------auto refresh page----------------------------------------------------------------------------------->
             setTimeout(function() {
                 window.location.reload();
