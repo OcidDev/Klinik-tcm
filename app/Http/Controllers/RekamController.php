@@ -58,7 +58,8 @@ class RekamController extends Controller
         $nomorAntrian = 1;
         // cek duplikat jam
         $timeSelected = $request->tanggal . ' ' . $request->time_slot . ':00';
-        $dataCek = Rekam::where('created_at', $timeSelected)->first();
+        // dd($timeSelected);
+        $dataCek = Rekam::where('jadwal_kedatangan', $timeSelected)->first();
         // dd($dataCek);
         if ($dataCek !== null) {
             session()->flash('warning', 'Jam Pemeriksaan Yang anda pilih sudah penuh.');
@@ -70,7 +71,8 @@ class RekamController extends Controller
             'id_pasien' => $validate['id_player'],
             'layanan' => $validate['layanan'],
             'keluhan' => $validate['keluhan'],
-            'id_dokter' => $validate['dokter']
+            'id_dokter' => $validate['dokter'],
+            'jadwal_kedatangan' => $timeSelected
         ]);
 
         $latestrekam = Rekam::all()->last();

@@ -12,6 +12,7 @@ class Rekam extends Model
         'nomorantrian',
         'id_pasien',
         'Tanggal Periksa',
+        'jadwal_kedatangan',
         'layanan',
         'keluhan',
         'id_dokter',
