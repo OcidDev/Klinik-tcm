@@ -86,7 +86,7 @@ class RekamController extends Controller
                 'nomorAntrian' => "00" . $nomorAntrian,
                 'nama' => $row->nama,
                 'timestamps' => $Rekam->created_at->format('H:i:s'),
-                'tanggaldaftar' => $Rekam->created_at->format('d-m-Y')
+                'created_at' => $Rekam->created_at->format('d-m-Y')
             ]);
 
         endforeach;
