@@ -59,7 +59,7 @@ class RekamController extends Controller
         // cek duplikat jam
         $timeSelected = $request->tanggal . ' ' . $request->time_slot . ':00';
         // dd($timeSelected);
-        $dataCek = Rekam::where('jadwal_kedatangan', $timeSelected)->first();
+        $dataCek = Rekam::where('created_at', $timeSelected)->first();
         // dd($dataCek);
         if ($dataCek !== null) {
             session()->flash('warning', 'Jam Pemeriksaan Yang anda pilih sudah penuh.');
